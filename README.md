@@ -1,2 +1,6 @@
 # WIndows Shutdown
-![Screenshot of the application](images/WindowsShutdown.jpg)
+
+<div align="center">
+  <img src="images/WindowsShutdown.jpg" alt="Screenshot of the application">
+</div>
+
