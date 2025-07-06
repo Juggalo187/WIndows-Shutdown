@@ -1,4 +1,14 @@
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using static System.Windows.Forms.DataFormats;
+using System;
+using System.Threading.Tasks;
 
 namespace WIndows_Shutdown
 {
@@ -15,7 +25,7 @@ namespace WIndows_Shutdown
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object? sender, EventArgs e)
         {
             int hours = (int)NudHours.Value;
             int minutes = (int)NudMinutes.Value;
@@ -36,18 +46,37 @@ namespace WIndows_Shutdown
             countdownTimer.Tick += CountdownTimer_Tick;
             countdownTimer.Start();
 
-            Process.Start(new ProcessStartInfo
+            //Process.Start(new ProcessStartInfo
+            //{
+            //    FileName = "shutdown",
+            //    Arguments = $"/s /t {delayInSeconds}",
+            //    CreateNoWindow = true,
+            //    UseShellExecute = false
+            //});
+
+            try
             {
-                FileName = "shutdown",
-                Arguments = $"/s /t {delayInSeconds}",
-                CreateNoWindow = true,
-                UseShellExecute = false
-            });
+                await Task.Run(() =>
+                {
+                    using var process = new System.Diagnostics.Process();
+                    process.StartInfo.FileName = "cmd.exe";
+                    process.StartInfo.Arguments = $"/c  shutdown /s /t {delayInSeconds}";
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.CreateNoWindow = true;
+                    process.Start();
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Exception: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+
             button1.Visible = false;
             CancelShutdown.Visible = true;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object? sender, EventArgs e)
         {
             int hours = (int)NudHours.Value;
             int minutes = (int)NudMinutes.Value;
@@ -59,22 +88,40 @@ namespace WIndows_Shutdown
                 return;
             }
 
-            remainingTime = delayInSeconds;
-            CountShut.Text = TimeSpan.FromSeconds(remainingTime).ToString(@"hh\:mm\:ss");
+            remainingTime2 = delayInSeconds;
+            CountShut.Text = TimeSpan.FromSeconds(remainingTime2).ToString(@"hh\:mm\:ss");
 
-            countdownTimer = new System.Windows.Forms.Timer();
-            countdownTimer.Interval = 1000; // 1 second
-            CountShut.Text = $"Restarting in {TimeSpan.FromSeconds(remainingTime):hh\\:mm\\:ss}";
-            countdownTimer.Tick += CountdownTimer_Tick2;
-            countdownTimer.Start();
+            countdownTimer2 = new System.Windows.Forms.Timer();
+            countdownTimer2.Interval = 1000; // 1 second
+            CountShut.Text = $"Restarting in {TimeSpan.FromSeconds(remainingTime2):hh\\:mm\\:ss}";
+            countdownTimer2.Tick += CountdownTimer_Tick2;
+            countdownTimer2.Start();
 
-            Process.Start(new ProcessStartInfo
+            //Process.Start(new ProcessStartInfo
+            //{
+            //    FileName = "shutdown",
+            //    Arguments = $"/r /f /t {delayInSeconds}",
+            //    CreateNoWindow = true,
+            //    UseShellExecute = false
+            //});
+
+
+            try
             {
-                FileName = "shutdown",
-                Arguments = $"/r /f /t {delayInSeconds}",
-                CreateNoWindow = true,
-                UseShellExecute = false
-            });
+                await Task.Run(() =>
+                {
+                    using var process = new System.Diagnostics.Process();
+                    process.StartInfo.FileName = "cmd.exe";
+                    process.StartInfo.Arguments = $"/c  shutdown /r /f /t {delayInSeconds}";
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.CreateNoWindow = true;
+                    process.Start();
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Exception: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             button2.Visible = false;
             CancelRestart.Visible = true;
@@ -97,16 +144,16 @@ namespace WIndows_Shutdown
 
         private void CountdownTimer_Tick2(object sender, EventArgs e)
         {
-            remainingTime--;
+            remainingTime2--;
 
-            if (remainingTime <= 0)
+            if (remainingTime2 <= 0)
             {
-                countdownTimer.Stop();
+                countdownTimer2.Stop();
                 CountShut.Text = "Restarting...";
             }
             else
             {
-                CountShut.Text = $"Restarting in {TimeSpan.FromSeconds(remainingTime):hh\\:mm\\:ss}";
+                CountShut.Text = $"Restarting in {TimeSpan.FromSeconds(remainingTime2):hh\\:mm\\:ss}";
             }
         }
 
@@ -134,7 +181,7 @@ namespace WIndows_Shutdown
                 CreateNoWindow = true,
                 UseShellExecute = false
             });
-            countdownTimer.Stop();
+            countdownTimer2.Stop();
             button2.Visible = true;
             CancelRestart.Visible = false;
             CountShut.Text = "";

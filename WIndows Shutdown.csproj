@@ -2,15 +2,16 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>WIndows_Shutdown</RootNamespace>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
+    <UseWindowsForms>True</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>WindowsShutdown.ico</ApplicationIcon>
   </PropertyGroup>
 
-  <ItemGroup>
+
+	<ItemGroup>
     <Content Include="WindowsShutdown.ico" />
   </ItemGroup>
 
